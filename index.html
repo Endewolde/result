@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Computer Programming — Student Result</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-deep:  #0D4A2E;
+      --green-mid:   #1A7A4A;
+      --green-light: #2EAA6A;
+      --gold:        #C8982A;
+      --gold-light:  #F0C14B;
+      --cream:       #FDFAF4;
+      --ink:         #1A1A1A;
+      --muted:       #6B7280;
+      --border:      #E5E7EB;
+      --white:       #FFFFFF;
+      --red:         #DC2626;
+      --blue:        #1D4ED8;
+      --radius:      12px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 100%);
+      color: white;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .logo-circle {
+      width: 72px;
+      height: 72px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .logo-circle svg { width: 46px; height: 46px; }
+    .header-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .header-text .subtitle {
+      font-size: 0.82rem;
+      opacity: 0.75;
+      margin-top: 5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .gold-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 40px 24px;
+    }
+
+    /* ── SEARCH CARD ── */
+    .search-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 36px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .search-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--green-deep);
+      margin-bottom: 8px;
+    }
+    .search-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+    .search-row {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .search-row input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .search-row input::placeholder { text-transform: none; letter-spacing: 0; color: #A0AEC0; }
+    .search-row input:focus {
+      border-color: var(--green-mid);
+      box-shadow: 0 0 0 4px rgba(26,122,74,0.1);
+      background: white;
+    }
+    .btn-search {
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .btn-search:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,122,74,0.35); }
+    .btn-search:active { transform: translateY(0); }
+
+    /* ── LOADING ── */
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 48px 0;
+    }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid var(--border);
+      border-top-color: var(--green-mid);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { color: var(--muted); font-size: 0.9rem; }
+
+    /* ── ERROR / NOT FOUND ── */
+    #error-state {
+      display: none;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid #FCA5A5;
+      padding: 40px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .error-icon { font-size: 3rem; margin-bottom: 16px; }
+    #error-state h3 { font-size: 1.25rem; color: var(--red); margin-bottom: 8px; }
+    #error-state p { color: var(--muted); font-size: 0.9rem; }
+    .search-again-btn {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--green-deep);
+      color: white;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ── RESULT PANEL ── */
+    #result-panel {
+      display: none;
+      margin-top: 28px;
+      animation: fadeUp 0.4s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Student identity bar */
+    .student-hero {
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 100%);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 28px 32px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .student-hero::after {
+      content: '';
+      position: absolute;
+      right: -30px; top: -30px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .avatar {
+      width: 60px; height: 60px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; font-weight: 700;
+      flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .student-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; line-height: 1.2; }
+    .student-id-badge {
+      display: inline-block;
+      margin-top: 6px;
+      background: rgba(255,255,255,0.15);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      letter-spacing: 0.07em;
+    }
+
+    /* Info grid */
+    .info-grid {
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .info-cell {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .info-cell:last-child { border-right: none; }
+    .info-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .info-value { font-size: 0.92rem; font-weight: 600; color: var(--ink); }
+
+    /* Score table */
+    .score-section {
+      background: white;
+      border: 1px solid var(--border);
+      border-top: none;
+      padding: 24px 28px;
+    }
+    .section-heading {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .score-bars { display: flex; flex-direction: column; gap: 14px; }
+    .score-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 60px;
+      align-items: center;
+      gap: 14px;
+    }
+    .score-name { font-size: 0.85rem; color: var(--muted); }
+    .score-bar-wrap { background: #F3F4F6; border-radius: 6px; height: 10px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 6px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+    .score-num { font-size: 0.85rem; font-weight: 600; text-align: right; }
+
+    /* Grade + total */
+    .grade-total-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .metric-box {
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .metric-box .metric-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .metric-box .metric-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .metric-box.total { background: #EFF6FF; color: var(--blue); }
+    .metric-box.grade-A, .metric-box.grade-Aplus { background: #F0FDF4; color: #166534; }
+    .metric-box.grade-B { background: #ECFDF5; color: #047857; }
+    .metric-box.grade-C { background: #FFFBEB; color: #92400E; }
+    .metric-box.grade-D { background: #FFF7ED; color: #C2410C; }
+    .metric-box.grade-F { background: #FEF2F2; color: #991B1B; }
+    .metric-box.grade-NG { background: #F9FAFB; color: #374151; }
+
+    /* Status ribbon */
+    .status-ribbon {
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      border: 1px solid var(--border);
+      border-top: 3px solid;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+    }
+    .status-ribbon.pass { border-top-color: #16A34A; }
+    .status-ribbon.fail { border-top-color: var(--red); }
+    .status-ribbon.incomplete { border-top-color: #D97706; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .status-ribbon.pass .status-dot { background: #16A34A; }
+    .status-ribbon.fail .status-dot { background: var(--red); }
+    .status-ribbon.incomplete .status-dot { background: #D97706; }
+    .status-text { font-size: 0.9rem; font-weight: 600; }
+    .status-ribbon.pass .status-text { color: #16A34A; }
+    .status-ribbon.fail .status-text { color: var(--red); }
+    .status-ribbon.incomplete .status-text { color: #D97706; }
+    .status-note { font-size: 0.82rem; color: var(--muted); margin-left: auto; }
+
+    /* Action buttons */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn-action {
+      display: flex; align-items: center; gap: 8px;
+      padding: 11px 20px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    .btn-new-search {
+      background: var(--cream);
+      color: var(--green-deep);
+      border: 1px solid var(--border);
+    }
+    .btn-new-search:hover { background: #E8F5EE; border-color: var(--green-mid); }
+    .btn-print {
+      background: white;
+      color: var(--ink);
+      border: 1px solid var(--border);
+    }
+    .btn-print:hover { background: #F9FAFB; }
+    .btn-pdf {
+      background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+      color: white;
+    }
+    .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(13,74,46,0.35); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: white;
+    }
+    footer strong { color: var(--green-deep); }
+
+    /* ── PRINT ── */
+    @media print {
+      header, .action-row, .search-card, footer { display: none !important; }
+      body { background: white; }
+      #result-panel { display: block !important; margin: 0; }
+      .student-hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      main { padding: 0; max-width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .header-inner { flex-direction: column; text-align: center; gap: 14px; }
+      .search-card { padding: 28px 20px; }
+      .search-row { flex-direction: column; }
+      .score-row { grid-template-columns: 110px 1fr 50px; }
+      .grade-total-row { grid-template-columns: 1fr 1fr; }
+      .student-hero { flex-direction: column; text-align: center; }
+      .info-grid { grid-template-columns: 1fr 1fr; }
+      main { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-circle">
+      <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="23" cy="23" r="21" stroke="#0D4A2E" stroke-width="2.5"/>
+        <path d="M23 8L28 18H38L30 24L33 35L23 29L13 35L16 24L8 18H18L23 8Z" fill="#0D4A2E"/>
+        <circle cx="23" cy="23" r="4" fill="#C8982A"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>Computer Programming</h1>
+      <div class="subtitle">Course Result &nbsp;·&nbsp; Natural Science &nbsp;·&nbsp; Year 1, Semester II &nbsp;·&nbsp; 2025/2026</div>
+    </div>
+  </div>
+  <div class="gold-bar"></div>
+</header>
+
+<main>
+  <!-- Search Card -->
+  <div class="search-card" id="search-card">
+    <h2>View Your Course Result</h2>
+    <p>Enter your Student ID to view your Computer Programming result.</p>
+    <div class="search-row">
+      <input type="text" id="student-id-input" placeholder="e.g. EPSU2500039" maxlength="15"
+             aria-label="Student ID" autocomplete="off" spellcheck="false"/>
+      <button class="btn-search" onclick="searchStudent()">Search</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Looking up student record…</p>
+  </div>
+
+  <!-- Not Found -->
+  <div id="error-state">
+    <div class="error-icon">🔍</div>
+    <h3>Student Record Not Found</h3>
+    <p>No record was found for ID <strong id="searched-id"></strong>.<br/>
+       Please check the ID and try again, or contact the Registrar's Office.</p>
+    <button class="search-again-btn" onclick="resetSearch()">← Try Again</button>
+  </div>
+
+  <!-- Result Panel -->
+  <div id="result-panel">
+    <div class="student-hero">
+      <div class="avatar" id="avatar-initials"></div>
+      <div>
+        <div class="student-name" id="res-name"></div>
+        <div class="student-id-badge" id="res-id-badge"></div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-cell"><div class="info-label">Department</div><div class="info-value" id="res-dept"></div></div>
+      <div class="info-cell"><div class="info-label">Program</div><div class="info-value" id="res-prog"></div></div>
+      <div class="info-cell"><div class="info-label">Year / Semester</div><div class="info-value" id="res-year"></div></div>
+      <div class="info-cell"><div class="info-label">Section</div><div class="info-value" id="res-section"></div></div>
+      <div class="info-cell"><div class="info-label">Admission</div><div class="info-value" id="res-admission"></div></div>
+      <div class="info-cell"><div class="info-label">Gender</div><div class="info-value" id="res-gender"></div></div>
+      <div class="info-cell"><div class="info-label">Academic Year</div><div class="info-value" id="res-acyear"></div></div>
+    </div>
+
+    <div class="score-section">
+      <div class="section-heading">Assessment Breakdown</div>
+      <div class="score-bars">
+        <div class="score-row">
+          <span class="score-name">Midterm (15%)</span>
+          <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-mid" style="background:#3B82F6"></div></div>
+          <span class="score-num" id="num-mid"></span>
+        </div>
+        <div class="score-row">
+          <span class="score-name">Final Exam (50%)</span>
+          <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-final" style="background:#8B5CF6"></div></div>
+          <span class="score-num" id="num-final"></span>
+        </div>
+        <div class="score-row">
+          <span class="score-name">Lab Work (15%)</span>
+          <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-lab" style="background:#10B981"></div></div>
+          <span class="score-num" id="num-lab"></span>
+        </div>
+        <div class="score-row">
+          <span class="score-name">Project (20%)</span>
+          <div class="score-bar-wrap"><div class="score-bar-fill" id="bar-proj" style="background:#F59E0B"></div></div>
+          <span class="score-num" id="num-proj"></span>
+        </div>
+      </div>
+
+      <div class="grade-total-row" style="margin-top:24px">
+        <div class="metric-box total" style="grid-column:1/-1">
+          <div class="metric-label">Total Score</div>
+          <div class="metric-value" id="res-total"></div>
+          <div style="font-size:0.75rem;margin-top:4px;opacity:.7">out of 100</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-ribbon" id="status-ribbon">
+      <div class="status-dot"></div>
+      <div class="status-text" id="status-text"></div>
+      <div class="status-note" id="status-note"></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-action btn-new-search" onclick="resetSearch()">
+        ← New Search
+      </button>
+      <button class="btn-action btn-print" onclick="window.print()">
+        🖨️ Print Result
+      </button>
+      <button class="btn-action btn-pdf" onclick="downloadPDF()">
+        ⬇ Download PDF
+      </button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <strong>Computer Programming</strong> &nbsp;·&nbsp; Course Result Portal &nbsp;·&nbsp; Natural Science, Year 1, Semester II &nbsp;·&nbsp; 2025/2026
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// STUDENT DATABASE  (auto-generated from uploaded files)
+// Fields: id, name, sex, mid, final, lab, project, section, dept, program, year, semester, admission, academicYear
+// ─────────────────────────────────────────────────────────────────────────────
+const STUDENTS = {
+  // ── Section NS-3 ──
+  "EPSU2500039": { name:"KASAHUN LEWEYE NIGUS",          sex:"M", mid:12,   final:21.5, lab:10, project:12, section:"NS-3" },
+  "EPSU2500332": { name:"KIBER TEMESGEN CHANIE",         sex:"M", mid:3,    final:24.5, lab:0,  project:14, section:"NS-3" },
+  "EPSU2500388": { name:"DAWIT FREW SIMEGN",             sex:"M", mid:5,    final:9.5,  lab:12, project:14, section:"NS-3" },
+  "EPSU2500394": { name:"BITANYA TARIKU LEMESSA",        sex:"F", mid:6,    final:17.5, lab:12, project:16, section:"NS-3" },
+  "EPSU2500443": { name:"BIRUK ABERA MARKOS",            sex:"M", mid:8,    final:20,   lab:12, project:16, section:"NS-3" },
+  "EPSU2500483": { name:"DAGIM TARIKU GEBREMADIN",       sex:"M", mid:6,    final:19.5, lab:10, project:16, section:"NS-3" },
+  "EPSU2500497": { name:"BLEN KIBIROM GEBREGZIABHER",    sex:"F", mid:8,    final:21.5, lab:12, project:16, section:"NS-3" },
+  "EPSU2500521": { name:"DANAIT KIDANE HAILU",           sex:"F", mid:4,    final:15.5, lab:10, project:14, section:"NS-3" },
+  "EPSU2500526": { name:"EDLAWIT ABDI GEDI",             sex:"F", mid:5,    final:15,   lab:15, project:16, section:"NS-3" },
+  "EPSU2500532": { name:"DAGMAWI TEMESGEN NEDA",         sex:"M", mid:4,    final:20.5, lab:0,  project:14, section:"NS-3" },
+  "EPSU2500541": { name:"BITANYA GETACHEW DEBELE",       sex:"M", mid:5,    final:10,   lab:10, project:18, section:"NS-3" },
+  "EPSU2500560": { name:"DAGMAWI FIREW GIRMA",           sex:"M", mid:6,    final:25,   lab:15, project:18, section:"NS-3" },
+  "EPSU2500580": { name:"DANIEL BAHIRU GETENET",         sex:"M", mid:3,    final:13,   lab:12, project:0,  section:"NS-3" },
+  "EPSU2500581": { name:"DESTA GETACHEW MENIGISTU",      sex:"M", mid:6,    final:27,   lab:12, project:12, section:"NS-3" },
+  "EPSU2500588": { name:"EDEN ZINAW DEMEKE",             sex:"F", mid:5,    final:18.5, lab:12, project:16, section:"NS-3" },
+  "EPSU2500594": { name:"DAGIM SOLOMON LEGESE",          sex:"M", mid:6,    final:24.5, lab:15, project:16, section:"NS-3" },
+  "EPSU2500595": { name:"DAGIM GIZACHEW GUADIE",         sex:"M", mid:4,    final:20.5, lab:15, project:16, section:"NS-3" },
+  "EPSU2500598": { name:"DAWIT TEGEGNEWORK YIRGA",       sex:"F", mid:6,    final:18,   lab:15, project:16, section:"NS-3" },
+  "EPSU2500607": { name:"DIBORA ZERIHUN MEKURIA",        sex:"F", mid:7,    final:19,   lab:15, project:18, section:"NS-3" },
+  "EPSU2500609": { name:"CHALA HAMU GEMEDA",             sex:"M", mid:9,    final:27,   lab:10, project:16, section:"NS-3" },
+  "EPSU2500613": { name:"DAGMAWIT KINFE BELAYNEH",       sex:"F", mid:7,    final:23,   lab:10, project:16, section:"NS-3" },
+  "EPSU2500621": { name:"DEREJE TIRUNEH TAMIR",          sex:"M", mid:12,   final:21,   lab:12, project:16, section:"NS-3" },
+  "EPSU2500624": { name:"DAGIM WOLDERUFAEL DIRAR",       sex:"M", mid:9,    final:28,   lab:12, project:18, section:"NS-3" },
+  "EPSU2500628": { name:"DABALO SHASHO SASABA",          sex:"M", mid:12,   final:38.5, lab:10, project:16, section:"NS-3" },
+  "EPSU2500640": { name:"DAGIM ANTENEH BIFTU",           sex:"M", mid:7,    final:16,   lab:12, project:16, section:"NS-3" },
+  "EPSU2500648": { name:"DIDA SORA GALGALO",             sex:"M", mid:8,    final:30.5, lab:15, project:14, section:"NS-3" },
+  "EPSU2500658": { name:"DAMISIE GIRMA ABDATA",          sex:"M", mid:4,    final:25.5, lab:10, project:14, section:"NS-3" },
+  "EPSU2500665": { name:"BONA TESFAYE AYANA",            sex:"M", mid:9,    final:25,   lab:12, project:14, section:"NS-3" },
+  "EPSU2500684": { name:"DAGMAWIT GETAHUN DEGU",         sex:"F", mid:10,   final:9,    lab:10, project:16, section:"NS-3" },
+  "EPSU2500695": { name:"BLEN AGEGNEWHUSH HAILU",        sex:"F", mid:4,    final:14.5, lab:15, project:18, section:"NS-3" },
+  "EPSU2500705": { name:"DAGMAWIT ESAYAS GEBRESILASE",   sex:"F", mid:3,    final:10.5, lab:10, project:14, section:"NS-3" },
+  "EPSU2500716": { name:"DELINA BEREKET KINFE",          sex:"F", mid:4,    final:17.5, lab:10, project:14, section:"NS-3" },
+  "EPSU2500730": { name:"DEJAT AZENAW TKUE",             sex:"M", mid:6,    final:17.5, lab:0,  project:16, section:"NS-3" },
+  "EPSU2500741": { name:"BLEN MESFEN ABEGAZ",            sex:"F", mid:4,    final:26.5, lab:12, project:16, section:"NS-3" },
+  "EPSU2500750": { name:"BLEN AYNALEM WOLDE",            sex:"F", mid:3,    final:17,   lab:10, project:16, section:"NS-3" },
+  "EPSU2500764": { name:"DAGMAWIT NIGUS TADESSE",        sex:"F", mid:8,    final:32.5, lab:12, project:16, section:"NS-3" },
+  "EPSU2500769": { name:"DANIEL SHIMELIS ARGAW",         sex:"M", mid:null, final:null, lab:null, project:null, section:"NS-3" },
+  "EPSU2500786": { name:"DAGIM TADESSE LEGESSE",         sex:"M", mid:5,    final:15.5, lab:12, project:16, section:"NS-3" },
+  "EPSU2500816": { name:"DIBORA AMSALU HAILE",           sex:"F", mid:7,    final:22,   lab:15, project:18, section:"NS-3" },
+  "EPSU2500948": { name:"DAGMAWI ABINET SEMERE",         sex:"M", mid:5,    final:16.5, lab:10, project:18, section:"NS-3" },
+  "EPSU2501146": { name:"ESMAEL MOHAMMED YIMER",         sex:"M", mid:3,    final:null, lab:10, project:12, section:"NS-3" },
+
+  // ── Section NS-5 ──
+  "EPSU2500007": { name:"HARUN YUSSUF MUZEMIL",          sex:"M", mid:12,   final:50,   lab:15, project:0,  section:"NS-5" },
+  "EPSU2500013": { name:"HASENAT MIFTAH DILLE",          sex:"F", mid:7,    final:21,   lab:10, project:18, section:"NS-5" },
+  "EPSU2500051": { name:"HABIBA MUHUDIN BUSHERA",        sex:"F", mid:5,    final:25,   lab:15, project:16, section:"NS-5" },
+  "EPSU2500075": { name:"IKRAM SHAMIL HASSEN",           sex:"F", mid:8,    final:33.5, lab:0,  project:18, section:"NS-5" },
+  "EPSU2500135": { name:"HANAN YUSUF HASSEN",            sex:"F", mid:8,    final:28,   lab:0,  project:18, section:"NS-5" },
+  "EPSU2500139": { name:"HUZEYFA ABDULHAKIM SHIFA",      sex:"M", mid:6,    final:22,   lab:10, project:0,  section:"NS-5" },
+  "EPSU2500158": { name:"ISMAEL NUREDIN SEID",           sex:"M", mid:7,    final:25.5, lab:15, project:20, section:"NS-5" },
+  "EPSU2500174": { name:"FIKIRTEMARIAM TEKLU TESGAYE",   sex:"F", mid:7,    final:24.5, lab:10, project:16, section:"NS-5" },
+  "EPSU2500178": { name:"FUAD TESFAYE MAMO",             sex:"M", mid:7,    final:26,   lab:0,  project:0,  section:"NS-5" },
+  "EPSU2500183": { name:"FIKIR BAYABLE MULATIE",         sex:"F", mid:2,    final:17.5, lab:10, project:16, section:"NS-5" },
+  "EPSU2500195": { name:"HERMELA TESFAYE TAMRAT",        sex:"F", mid:6,    final:26,   lab:12, project:0,  section:"NS-5" },
+  "EPSU2500206": { name:"FIREMARYAM ZERIHUN ASHINE",     sex:"F", mid:5,    final:26,   lab:10, project:16, section:"NS-5" },
+  "EPSU2500211": { name:"HANNA MINWAGAW ALEMU",          sex:"F", mid:6,    final:24.5, lab:12, project:14, section:"NS-5" },
+  "EPSU2500237": { name:"FITSUM BERHE GEBREMESKEL",      sex:"M", mid:8,    final:31.5, lab:8,  project:12, section:"NS-5" },
+  "EPSU2500242": { name:"HAYAT TOFIK ABDELA",            sex:"F", mid:9,    final:26,   lab:0,  project:18, section:"NS-5" },
+  "EPSU2500253": { name:"HANA GHEDAMU KAHSAY",           sex:"F", mid:6,    final:31.5, lab:15, project:14, section:"NS-5" },
+  "EPSU2500287": { name:"HASSET HAILU ARGAW",            sex:"M", mid:6,    final:15.5, lab:0,  project:0,  section:"NS-5" },
+  "EPSU2500294": { name:"FIREHIWOT MOGES DAGNE",         sex:"F", mid:2,    final:11.5, lab:8,  project:16, section:"NS-5" },
+  "EPSU2500310": { name:"GEBREMEDHEN WOLDE GEBREMEDHEN", sex:"M", mid:8,    final:32,   lab:8,  project:0,  section:"NS-5" },
+  "EPSU2500324": { name:"ISRAEL WORKU BEKELE",           sex:"M", mid:6,    final:23,   lab:8,  project:12, section:"NS-5" },
+  "EPSU2500338": { name:"HANAN SEID ALI",                sex:"F", mid:7,    final:28,   lab:0,  project:18, section:"NS-5" },
+  "EPSU2500341": { name:"FIRAOL TAYE KELBESSA",          sex:"M", mid:8,    final:20.5, lab:10, project:14, section:"NS-5" },
+  "EPSU2500346": { name:"FREZER TEKLAY ABRHA",           sex:"M", mid:4,    final:17.5, lab:0,  project:16, section:"NS-5" },
+  "EPSU2500402": { name:"GEDION YEHEYIS BEKELE",         sex:"M", mid:5,    final:19.5, lab:0,  project:16, section:"NS-5" },
+  "EPSU2500428": { name:"FIRAOL MELESE TSIGE",           sex:"M", mid:8,    final:18.5, lab:10, project:16, section:"NS-5" },
+  "EPSU2500470": { name:"FIKER HAILU DEMEKE",            sex:"F", mid:3,    final:23,   lab:10, project:14, section:"NS-5" },
+  "EPSU2500487": { name:"HAFIZA ABESHA HASSEN",          sex:"F", mid:9,    final:30,   lab:8,  project:20, section:"NS-5" },
+  "EPSU2500510": { name:"HAWENI YILMA GEMECHU",          sex:"F", mid:8,    final:35.5, lab:13, project:18, section:"NS-5" },
+  "EPSU2500529": { name:"HANA YIFTER ASEFA",             sex:"F", mid:6,    final:20,   lab:0,  project:16, section:"NS-5" },
+  "EPSU2500682": { name:"HARIZ JEMAL MOHAMMED",          sex:"M", mid:10,   final:41,   lab:15, project:18, section:"NS-5" },
+  "EPSU2500790": { name:"HENOK ABABU TEFERA",            sex:"M", mid:8,    final:18.5, lab:12, project:0,  section:"NS-5" },
+  "EPSU2500800": { name:"HEMEN GIRMAYE ASSFAW",          sex:"M", mid:4,    final:15.5, lab:10, project:16, section:"NS-5" },
+  "EPSU2501010": { name:"HERAN ALEMNEH MUHA",            sex:"F", mid:6,    final:18,   lab:0,  project:0,  section:"NS-5" },
+  "EPSU2501120": { name:"GOSA WELDAMANUAL TADESSE",      sex:"M", mid:10,   final:16,   lab:8,  project:12, section:"NS-5" },
+  "EPSU2501131": { name:"HENOK ENDALE MAMO",             sex:"M", mid:7,    final:12.5, lab:8,  project:12, section:"NS-5" },
+  "EPSU2501620": { name:"IMRAN AHMED ABDELE",            sex:"M", mid:10,   final:32,   lab:8,  project:14, section:"NS-5" },
+  "EPSU2501624": { name:"GIZEALEW SHUME ENDESHEW",       sex:"M", mid:8,    final:32.5, lab:8,  project:12, section:"NS-5" },
+  "EPSU2501628": { name:"GIRMAY GEBREMICHAEL ALEMAYOH",  sex:"M", mid:8,    final:28.5, lab:8,  project:16, section:"NS-5" },
+  "EPSU2501631": { name:"FIKER ABEBE BEGNA",             sex:"M", mid:5,    final:30,   lab:10, project:16, section:"NS-5" },
+};
+
+// Shared metadata
+const META = {
+  dept: "Natural Science",
+  program: "Degree",
+  year: "Year 1 / Semester II",
+  admission: "Regular",
+  academicYear: "2025/2026"
+};
+
+// Ethiopian grading scale (out of 100)
+function getGrade(total) {
+  if (total === null) return { grade:"NG", gp:0, desc:"Not Graded", cls:"grade-NG" };
+  if (total >= 90) return { grade:"A+", gp:4.0, desc:"Excellent",       cls:"grade-Aplus" };
+  if (total >= 80) return { grade:"A",  gp:4.0, desc:"Very Good",       cls:"grade-A" };
+  if (total >= 70) return { grade:"B",  gp:3.0, desc:"Good",            cls:"grade-B" };
+  if (total >= 60) return { grade:"C",  gp:2.0, desc:"Satisfactory",    cls:"grade-C" };
+  if (total >= 50) return { grade:"D",  gp:1.0, desc:"Pass",            cls:"grade-D" };
+  return               { grade:"F",  gp:0.0, desc:"Fail",            cls:"grade-F" };
+}
+
+function isIncomplete(s) {
+  return s.mid === null || s.final === null || s.lab === null || s.project === null;
+}
+
+function computeTotal(s) {
+  if (isIncomplete(s)) return null;
+  return (s.mid || 0) + (s.final || 0) + (s.lab || 0) + (s.project || 0);
+}
+
+function toDisplay(val, max) {
+  if (val === null) return "—";
+  return `${val} / ${max}`;
+}
+
+function pct(val, max) {
+  if (val === null) return 0;
+  return Math.min(100, (val / max) * 100);
+}
+
+function initials(name) {
+  return name.split(' ').slice(0,2).map(w=>w[0]).join('');
+}
+
+// ── Search Logic ──
+function searchStudent() {
+  const raw = document.getElementById('student-id-input').value.trim().toUpperCase();
+  if (!raw) return;
+
+  // Hide everything, show loader
+  document.getElementById('search-card').style.display = 'none';
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('result-panel').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+
+    const student = STUDENTS[raw];
+    if (!student) {
+      document.getElementById('searched-id').textContent = raw;
+      document.getElementById('error-state').style.display = 'block';
+      return;
+    }
+
+    renderResult(raw, student);
+    document.getElementById('result-panel').style.display = 'block';
+  }, 900);
+}
+
+function renderResult(id, s) {
+  const total = computeTotal(s);
+  const incomplete = isIncomplete(s);
+  const g = incomplete ? { grade:"NG", gp:0, desc:"Incomplete", cls:"grade-NG" } : getGrade(total);
+
+  // Identity
+  document.getElementById('avatar-initials').textContent = initials(s.name);
+  document.getElementById('res-name').textContent = s.name;
+  document.getElementById('res-id-badge').textContent = id;
+
+  // Info cells
+  document.getElementById('res-dept').textContent = META.dept;
+  document.getElementById('res-prog').textContent = META.program;
+  document.getElementById('res-year').textContent = META.year;
+  document.getElementById('res-section').textContent = s.section;
+  document.getElementById('res-admission').textContent = META.admission;
+  document.getElementById('res-gender').textContent = s.sex === 'M' ? 'Male' : 'Female';
+  document.getElementById('res-acyear').textContent = META.academicYear;
+
+  // Score bars
+  const setBar = (barId, numId, val, max) => {
+    document.getElementById(barId).style.width = pct(val, max) + '%';
+    document.getElementById(numId).textContent = toDisplay(val, max);
+  };
+  setBar('bar-mid',   'num-mid',   s.mid,     15);
+  setBar('bar-final', 'num-final', s.final,   50);
+  setBar('bar-lab',   'num-lab',   s.lab,     15);
+  setBar('bar-proj',  'num-proj',  s.project, 20);
+
+  // Total score
+  document.getElementById('res-total').textContent = total !== null ? total : '—';
+
+  // Status
+  const ribbon = document.getElementById('status-ribbon');
+  const statusText = document.getElementById('status-text');
+  const statusNote = document.getElementById('status-note');
+
+  if (incomplete) {
+    ribbon.className = 'status-ribbon incomplete';
+    statusText.textContent = 'Result Incomplete';
+    statusNote.textContent = 'One or more assessments are missing. Contact your instructor.';
+  } else {
+    ribbon.className = 'status-ribbon pass';
+    statusText.textContent = 'Semester II Complete';
+    statusNote.textContent = `Total: ${total}/100`;
+  }
+}
+
+function resetSearch() {
+  document.getElementById('student-id-input').value = '';
+  document.getElementById('search-card').style.display = 'block';
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('result-panel').style.display = 'none';
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('student-id-input').focus();
+}
+
+// Enter key
+document.getElementById('student-id-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchStudent();
+});
+
+// ── PDF Download ──
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+
+  const id   = document.getElementById('res-id-badge').textContent;
+  const name = document.getElementById('res-name').textContent;
+  const dept = document.getElementById('res-dept').textContent;
+  const prog = document.getElementById('res-prog').textContent;
+  const year = document.getElementById('res-year').textContent;
+  const sect = document.getElementById('res-section').textContent;
+  const acyr = document.getElementById('res-acyear').textContent;
+  const gen  = document.getElementById('res-gender').textContent;
+  const adm  = document.getElementById('res-admission').textContent;
+  const total= document.getElementById('res-total').textContent;
+  const stxt = document.getElementById('status-text').textContent;
+
+  const s = STUDENTS[id];
+
+  // Header bg
+  doc.setFillColor(13, 74, 46);
+  doc.rect(0, 0, 210, 38, 'F');
+  doc.setFillColor(200, 152, 42);
+  doc.rect(0, 38, 210, 2, 'F');
+
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica','bold');
+  doc.text('Computer Programming', 105, 17, {align:'center'});
+  doc.setFontSize(9);
+  doc.setFont('helvetica','normal');
+  doc.text(`Course Result  ·  Natural Science  ·  Year 1, Semester II  ·  ${acyr}`, 105, 28, {align:'center'});
+
+  // Student card
+  doc.setFillColor(245, 248, 245);
+  doc.rect(14, 46, 182, 34, 'F');
+  doc.setDrawColor(26,122,74);
+  doc.setLineWidth(0.5);
+  doc.rect(14, 46, 182, 34, 'S');
+
+  doc.setTextColor(13,74,46);
+  doc.setFontSize(13);
+  doc.setFont('helvetica','bold');
+  doc.text(name, 22, 57);
+  doc.setFontSize(9);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(80,80,80);
+  doc.text(`Student ID: ${id}`, 22, 64);
+  doc.text(`${dept}  ·  ${prog}  ·  Section ${sect}  ·  ${gen}  ·  ${adm}`, 22, 70);
+
+  // Assessment table
+  doc.setFontSize(10);
+  doc.setFont('helvetica','bold');
+  doc.setTextColor(13,74,46);
+  doc.text('Assessment Breakdown', 14, 92);
+
+  const rows = [
+    ['Midterm (15%)',    s ? toDisplay(s.mid,15)     : '—'],
+    ['Final Exam (50%)', s ? toDisplay(s.final,50)   : '—'],
+    ['Lab Work (15%)',   s ? toDisplay(s.lab,15)      : '—'],
+    ['Project (20%)',    s ? toDisplay(s.project,20)  : '—'],
+  ];
+
+  let y = 98;
+  doc.setFontSize(9);
+  rows.forEach(([label, val], i) => {
+    doc.setFillColor(i%2===0 ? 250:255, i%2===0 ? 252:255, i%2===0 ? 250:255);
+    doc.rect(14, y, 182, 9, 'F');
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(60,60,60);
+    doc.text(label, 20, y+6);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(30,30,30);
+    doc.text(val, 140, y+6, {align:'right'});
+    y += 9;
+  });
+
+  // Total score box (full width)
+  y += 6;
+  doc.setFillColor(219, 234, 254);
+  doc.rect(14, y, 182, 22, 'F');
+
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(9);
+  doc.setTextColor(29,78,216);
+  doc.text('TOTAL SCORE', 105, y+7, {align:'center'});
+  doc.setFontSize(22);
+  doc.text(`${total} / 100`, 105, y+18, {align:'center'});
+
+  // Status
+  y += 30;
+  doc.setFillColor(236,253,245);
+  doc.rect(14, y, 182, 12, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(10);
+  doc.setTextColor(22,101,52);
+  doc.text(stxt, 105, y+8, {align:'center'});
+
+  // Footer
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(130,130,130);
+  doc.text(`Generated on ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}`, 105, 280, {align:'center'});
+
+  doc.save(`Result_${id}.pdf`);
+}
+</script>
+</body>
+</html>
